@@ -6,7 +6,7 @@ import (
 	"unicode"
 
 	"github.com/games130/logp"
-	"github.com/games130/heplify-server-metric/config"
+	"github.com/games130/heplify-server-st2webhook/config"
 )
 
 func cutSpace(str string) string {

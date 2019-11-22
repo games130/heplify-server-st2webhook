@@ -7,7 +7,7 @@ import (
 	"syscall"
 
 	"github.com/games130/logp"
-	"github.com/games130/heplify-server-metric/decoder"
+	"github.com/games130/heplify-server-st2webhook/decoder"
 )
 
 type Metric struct {

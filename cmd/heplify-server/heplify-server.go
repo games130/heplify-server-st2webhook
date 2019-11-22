@@ -14,8 +14,8 @@ import (
 	"github.com/koding/multiconfig"
 	"github.com/games130/logp"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
-	"github.com/games130/heplify-server-metric/config"
-	input "github.com/games130/heplify-server-metric/server"
+	"github.com/games130/heplify-server-st2webhook/config"
+	input "github.com/games130/heplify-server-st2webhook/server"
 )
 
 type server interface {
