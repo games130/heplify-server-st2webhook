@@ -24,7 +24,6 @@ type HEPInput struct {
 	pmCh          chan *decoder.HEP
 	wg            *sync.WaitGroup
 	quit          chan bool
-	perMSGDebug   bool
 	stats         HEPStats
 }
 
@@ -77,8 +76,6 @@ func NewHEPInput() *HEPInput {
 		quit:      make(chan bool),
 	}
 	
-	h.perMSGDebug = config.Setting.PerMSGDebug
-
 	return h
 }
 
@@ -143,10 +140,6 @@ func (h *HEPInput) hepWorker() {
 		case msg := <-h.inCh:
 			//fmt.Println("want to start decoding %s and %s", msg.GetCID(), msg.GetFirstMethod())
 			hepPkt, _ := decoder.DecodeHEP(msg)
-			
-			if h.perMSGDebug {
-				logp.Info("perMSGDebug: ,HEPCount,%s, SrcIP,%s, DstIP,%s, CID,%s, FirstMethod,%s, FromUser,%s, ToUser,%s", h.stats.HEPCount, hepPkt.SrcIP, hepPkt.DstIP, hepPkt.CallID, hepPkt.FirstMethod, hepPkt.FromUser, hepPkt.ToUser)
-			}
 			
 			h.statsCount(hepPkt.FirstMethod)
 			h.pmCh <- hepPkt

@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"net/http"
 	"os"
 	"os/signal"
 	"strings"
@@ -13,7 +12,6 @@ import (
 
 	"github.com/koding/multiconfig"
 	"github.com/games130/logp"
-	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/games130/heplify-server-st2webhook/config"
 	input "github.com/games130/heplify-server-st2webhook/server"
 )
@@ -99,16 +97,6 @@ func main() {
 			}(srv)
 		}
 		wg.Wait()
-	}
-	
-	if promAddr := config.Setting.PromAddr; len(promAddr) > 2 {
-		go func() {
-			http.Handle("/metrics", promhttp.Handler())
-			err := http.ListenAndServe(promAddr, nil)
-			if err != nil {
-				logp.Err("%v", err)
-			}
-		}()
 	}
 	
 	startServer()

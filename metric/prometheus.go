@@ -46,9 +46,9 @@ func (p *Prometheus) setup() (err error) {
 func (p *Prometheus) expose(hCh chan *decoder.HEP) {
 	for pkt := range hCh {
 		if pkt != nil && pkt.ProtoType == 1 {
-			dt, dOk := p.TargetIPMap[pkt.DstIP]
+			_, dOk := p.TargetIPMap[pkt.DstIP]
 				if dOk {
-					code, codeOk := p.SIPErrorCodeMap[pkt.FirstMethod]
+					_, codeOk := p.SIPErrorCodeMap[pkt.FirstMethod]
 					if codeOk {
 						p.generateWebhook(pkt)
 					}
@@ -73,7 +73,7 @@ func (p *Prometheus) generateWebhook(pkt *decoder.HEP) {
 	debug(httputil.DumpRequestOut(req, true))
 	resp, err := client.Do(req)
 	if err != nil {
-		logp.Err(err)
+		logp.Err("%s\n\n", err)
 	}
 	body, err := ioutil.ReadAll(resp.Body)
 	logp.Info("Response: ", string(body))
