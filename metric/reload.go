@@ -30,15 +30,15 @@ func (p *Prometheus) reload() {
 
 	fs := cutSpace(string(fb))
 
-	if si := strings.Index(fs, "PromTargetIP=\""); si > -1 {
-		s := si + len("PromTargetIP=\"")
+	if si := strings.Index(fs, "TargetIP=\""); si > -1 {
+		s := si + len("TargetIP=\"")
 		e := strings.Index(fs[s:], "\"")
 		if e >= 7 {
 			fsTargetIP = strings.Split(fs[s:s+e], ",")
 		}
 	}
-	if si := strings.Index(fs, "PromTargetName=\""); si > -1 {
-		s := si + len("PromTargetName=\"")
+	if si := strings.Index(fs, "SIPErrorCode=\""); si > -1 {
+		s := si + len("SIPErrorCode=\"")
 		e := strings.Index(fs[s:], "\"")
 		if e > 0 {
 			fsTargetName = strings.Split(fs[s:s+e], ",")
@@ -46,20 +46,25 @@ func (p *Prometheus) reload() {
 	}
 
 	if fsTargetIP != nil && fsTargetName != nil && len(fsTargetIP) == len(fsTargetName) {
-		p.TargetConf.Lock()
+		//p.TargetConf.Lock()  //not sure what this is for
 		p.TargetIP = fsTargetIP
-		p.TargetName = fsTargetName
-		p.TargetEmpty = false
-		p.TargetMap = make(map[string]string)
-		for i := 0; i < len(p.TargetName); i++ {
-			p.TargetMap[p.TargetIP[i]] = p.TargetName[i]
+		p.SIPErrorCode = fsTargetName
+		
+		p.TargetIPMap = make(map[string]string)
+		for i := 0; i < len(p.TargetIP); i++ {
+			p.TargetIPMap[p.TargetIP[i]] = p.TargetIP[i]
 		}
-		p.TargetConf.Unlock()
-		logp.Info("successfully reloaded PromTargetIP: %#v", fsTargetIP)
-		logp.Info("successfully reloaded PromTargetName: %#v", fsTargetName)
+		
+		p.SIPErrorCodeMap = make(map[string]string)
+		for i := 0; i < len(p.SIPErrorCode); i++ {
+			p.SIPErrorCodeMap[p.SIPErrorCode[i]] = p.SIPErrorCode[i]
+		}
+		
+		//p.TargetConf.Unlock()   //not sure what this is for
+		logp.Info("successfully reloaded TargetIP: %#v", fsTargetIP)
+		logp.Info("successfully reloaded SIPErrorCode: %#v", fsTargetName)
 	} else {
-		logp.Info("failed to reload PromTargetIP: %#v", fsTargetIP)
-		logp.Info("failed to reload PromTargetName: %#v", fsTargetName)
-		logp.Info("please give every PromTargetIP a unique IP and PromTargetName a unique name")
+		logp.Info("failed to reload TargetIP: %#v", fsTargetIP)
+		logp.Info("failed to reload SIPErrorCode: %#v", fsTargetName)
 	}
 }

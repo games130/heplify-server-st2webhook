@@ -1,14 +1,8 @@
 package metric
 
 import (
-	"encoding/binary"
 	"fmt"
 	"strings"
-	"sync"
-	"regexp"
-	"time"
-	"os"
-	"bufio"
 	"crypto/tls"
 	"bytes"
 	"io/ioutil"
@@ -79,7 +73,7 @@ func (p *Prometheus) generateWebhook(pkt *decoder.HEP) {
 	debug(httputil.DumpRequestOut(req, true))
 	resp, err := client.Do(req)
 	if err != nil {
-		log.Fatal(err)
+		logp.Err(err)
 	}
 	body, err := ioutil.ReadAll(resp.Body)
 	logp.Info("Response: ", string(body))
@@ -90,6 +84,6 @@ func debug(data []byte, err error) {
     if err == nil {
         logp.Info("%s\n\n", data)
     } else {
-        logp.Error("%s\n\n", err)
+        logp.Err("%s\n\n", err)
     }
 }
