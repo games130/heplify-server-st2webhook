@@ -11,7 +11,7 @@ import (
 	"github.com/games130/heplify-server-st2webhook/config"
 	"github.com/games130/heplify-server-st2webhook/decoder"
 	"github.com/games130/heplify-server-st2webhook/metric"
-	proto "github.com/games130/heplify-server-st2webhook/proto"
+	proto "github.com/games130/microProtocSIP"
 
 	"github.com/micro/go-micro"
 	"github.com/micro/go-micro/broker"
@@ -60,11 +60,11 @@ type HEPStats struct {
 func (h *HEPInput) subEv(ctx context.Context, event *proto.Event) error {
 	//log.Logf("[pubsub.2] Received event %+v with metadata %+v\n", event, md)
 	//fmt.Println("received %s and %s", event.GetCID(), event.GetFirstMethod())
-	
+
 	// do something with event
 	atomic.AddUint64(&h.stats.HEPCount, 1)
 	h.inCh <- event
-	
+
 	return nil
 }
 
@@ -75,7 +75,7 @@ func NewHEPInput() *HEPInput {
 		wg:        &sync.WaitGroup{},
 		quit:      make(chan bool),
 	}
-	
+
 	return h
 }
 
@@ -85,13 +85,13 @@ func (h *HEPInput) Run() {
 		h.wg.Add(1)
 		go h.hepWorker()
 	}
-	
+
 	go h.logStats()
-	
+
 	b := nats.NewBroker(
 		broker.Addrs(config.Setting.BrokerAddr),
 	)
-	
+
 	// create a service
 	service := micro.NewService(
 		micro.Name("go.micro.srv.metric"),
@@ -99,19 +99,19 @@ func (h *HEPInput) Run() {
 	)
 	// parse command line
 	service.Init()
-	
+
 	// register subscriber
 	micro.RegisterSubscriber(config.Setting.BrokerTopic, service.Server(), h.subEv, server.SubscriberQueue(config.Setting.BrokerQueue))
 
 	m := metric.New("prometheus")
 	m.Chan = h.pmCh
-	
+
 	//fmt.Println("micro server before start")
 	go func (){
 		if err := service.Run(); err != nil {
 			logp.Err("%v", err)
 		}
-	}()	
+	}()
 
 	//fmt.Println("metric server before start")
 	if err := m.Run(); err != nil {
@@ -140,7 +140,7 @@ func (h *HEPInput) hepWorker() {
 		case msg := <-h.inCh:
 			//fmt.Println("want to start decoding %s and %s", msg.GetCID(), msg.GetFirstMethod())
 			hepPkt, _ := decoder.DecodeHEP(msg)
-			
+
 			h.statsCount(hepPkt.FirstMethod)
 			h.pmCh <- hepPkt
 		}
@@ -251,5 +251,3 @@ func (h *HEPInput) logStats() {
 		}
 	}
 }
-
-

@@ -3,7 +3,7 @@ package decoder
 import (
 	"time"
 
-	proto "github.com/games130/heplify-server-st2webhook/proto"
+	proto "github.com/games130/microProtocSIP"
 )
 
 // The first 4 bytes are the string "HEP3". The next 2 bytes are the length of the
@@ -42,12 +42,15 @@ type HEP struct {
 	Timestamp   time.Time
 	HostTag     string
 	NodeName    string
+	XCallID     string
+	PaiUser     string
+
 }
 
 // DecodeHEP returns a parsed HEP message
 func DecodeHEP(packet *proto.Event) (*HEP, error) {
 	hep := &HEP{}
-	
+
 	hep.Version      = packet.GetVersion()
 	hep.Protocol     = packet.GetProtocol()
 	hep.SrcIP        = packet.GetSrcIP()
@@ -71,13 +74,15 @@ func DecodeHEP(packet *proto.Event) (*HEP, error) {
 	hep.RTPStatVal   = packet.GetRTPStatVal()
 	hep.ToUser       = packet.GetToUser()
 	hep.ProtoString  = packet.GetProtoString()
-	
+
 	str := packet.GetTimestamp()
 	t,_ := time.Parse(time.RFC3339, str)
 	hep.Timestamp    = t
-	
+
 	hep.HostTag      = packet.GetHostTag()
 	hep.NodeName     = packet.GetNodeName()
+	hep.XCallID      = packet.GetXCallID()
+	hep.PaiUser      = packet.GetPaiUser()
 
 	return hep, nil
 }
