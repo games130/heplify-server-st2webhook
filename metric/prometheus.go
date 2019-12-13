@@ -80,34 +80,33 @@ func (p *Prometheus) generateWebhook(pkt *decoder.HEP) {
                  TLSClientConfig: &tls.Config{InsecureSkipVerify: true}, // ignore expired SSL certificates
     }
 	var stringData string
-	stringData = fmt.Sprintf("{\"SrcIP\": \"%s\",
-							   \"DstIP\": \"%s\",
-							   \"Tsec\": \"%s\",
-							   \"CID\": \"%s\",
-							   \"CseqMethod\": \"%s\",
-							   \"FirstMethod\": \"%s\",
-							   \"CallID\": \"%s\",
-							   \"FromUser\": \"%s\",
-							   \"ReasonVal\": \"%s\",
-							   \"ToUser\": \"%s\",
-							   \"Timestamp\": \"%s\",
-		                       \"XCallID\": \"%s\",
-							   \"CseqMethod\": \"%s\
-							   "}",
-							   pkt.SrcIP,
-							   pkt.DstIP,
-							   pkt.Tsec,
-							   pkt.CID,
-							   pkt.CseqMethod,
-							   pkt.FirstMethod,
-							   pkt.CallID,
-							   pkt.FromUser,
-							   pkt.ReasonVal,
-							   pkt.ToUser,
-							   pkt.Timestamp,
-							   pkt.XCallID,
-							   pkt.CseqMethod,
-							   )
+	stringData = fmt.Sprintf("{\"SrcIP\": \"%s\","+
+							 "\"DstIP\": \"%s\","+
+							 "\"Tsec\": \"%s\","+
+							 "\"CID\": \"%s\","+
+							 "\"CseqMethod\": \"%s\","+
+							 "\"FirstMethod\": \"%s\","+
+							 "\"CallID\": \"%s\","+
+							 "\"FromUser\": \"%s\","+
+							 "\"ReasonVal\": \"%s\","+
+							 "\"ToUser\": \"%s\","+
+							 "\"Timestamp\": \"%s\","+
+		                     "\"XCallID\": \"%s\","+
+							 "\"CseqMethod\": \"%s\"}",
+							 pkt.SrcIP,
+							 pkt.DstIP,
+							 pkt.Tsec,
+							 pkt.CID,
+							 pkt.CseqMethod,
+							 pkt.FirstMethod,
+							 pkt.CallID,
+							 pkt.FromUser,
+							 pkt.ReasonVal,
+							 pkt.ToUser,
+							 pkt.Timestamp,
+							 pkt.XCallID,
+							 pkt.CseqMethod,
+							 )
 	var data = []byte(stringData)
 
 	req, err := http.NewRequest("POST", config.Setting.St2URL, bytes.NewBuffer(data))
