@@ -29,8 +29,8 @@ func (p *Prometheus) setup() (err error) {
 		p.TargetMap = make(map[string]map[string]string)
 		for i := 0; i < len(p.Target); i++ {
 			//after split you will have array of 172.10.10.10 422 503 604  and   array of 192.168.1.1 303 333 404
-			tempSIPErrorCode = strings.Split(cutSpace(p.Target[i]), ",")
-			tempSIPErrorCodeMap = make(map[string]string)
+			tempSIPErrorCode := strings.Split(cutSpace(p.Target[i]), ",")
+			tempSIPErrorCodeMap := make(map[string]string)
 			for k := 1; k < len(tempSIPErrorCode); k++ {
 				tempSIPErrorCodeMap[tempSIPErrorCode[k]] = tempSIPErrorCode[k]
 			}
